@@ -1,2 +1,9 @@
 os2cx.pro.user*
 *.scad.os2cx
+*.o
+/gui/moc_*.*
+Makefile
+/test/test
+/gui/OpenSCAD2CalculiX
+/core/os2cx
+.qmake.stash
