@@ -55,6 +55,11 @@ module __os2cx_beacon() {
 }
 
 module os2cx_analysis_custom(lines, unit_system=undef) {
+    // Disable this assert since it uses function literals that were added in OpenSCAD 2021.01 and Ubuntu 22.04,
+    // and not available in OpenSCAD 2019.05 and Ubuntu 20.04.
+    // Cannot use if() with version_num() since the compiler parser fails, so must be commented out.
+    // https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/User-Defined_Functions_and_Modules#Function_literals
+    /*
     assert(
         __os2cx_is_list_of(lines, function(l) (
             is_string(l)
@@ -64,6 +69,8 @@ module os2cx_analysis_custom(lines, unit_system=undef) {
             ))
         )),
         "malformed input lines");
+    }
+    */
     assert(
         is_list(unit_system)
         && len(unit_system) == 3
