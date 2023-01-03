@@ -12,9 +12,12 @@ os2cx_material_elastic_simple(
     density=[1185, "kg/m^3"]); /* 1.185 g/cc */
 
 resolution = 100;
-// Stachiw experiments are specified in inches
+
+// Stachiw experiments are specified in inches and psi
 Di = 1.5;
 t = 0.559/Di;
+pressure_psi = 20000;
+
 function get_meters_from_inches(inch) = 0.0254 * inch;
 Di_meters = get_meters_from_inches(Di);
 t_meters = get_meters_from_inches(t);
@@ -31,6 +34,7 @@ os2cx_mesh("test_disc", material="acrylic") {
 // With supports on the entire cylinder sides, the deflection is micrometers.
 // With a thin ring around the bottom edge, the deflection is a more reasonable 1.2mm
 // At 6000 psi we are expecting about 0.025"=0.635mm from figure 7.12 but the graph is hard to read
+// At 20000 psi fig 7.12 should be 0.15"=3.81mm, the deflection calculated is 4.6mm
 os2cx_select_volume("supported_edge") {
     translate([0,0,-t_meters/2])
     difference() {
@@ -47,7 +51,6 @@ os2cx_select_surface("load_surface", [0, 0, +1], 45) /* tolerance angle = 45 deg
 
 // Apply pressure across entire load surface in psi
 // Convert from psi into Pa since os2cx doesn't support psi or lb/in^2 directly
-pressure_psi = 6000;
 function get_pascal_from_psi(psi) = 6894.76 * psi;
 pressure_Pa = get_pascal_from_psi(pressure_psi);
 echo("pressure(psi)", pressure_psi, "pressure(Pa)", pressure_Pa, "pressure(MPa)", pressure_Pa/1000000.0);
