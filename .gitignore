@@ -7,3 +7,4 @@ Makefile
 /gui/OpenSCAD2CalculiX
 /core/os2cx
 .qmake.stash
+/temp-*

@@ -13,17 +13,18 @@ os2cx_material_elastic_simple(
 
 resolution = 100;
 
-// Stachiw experiments are specified in inches and psi
-Di = 1.5;
-t = 0.559 * Di;
-pressure_psi = 20000;
+// Stachiw experiments from Figure 7.12 are specified in inches and psi, tdi is t/Di (thickness divided by diameter)
+Di = is_undef(inject_diameter) ? 1.5 : inject_diameter;
+tdi = is_undef(inject_tdi) ? 0.559 : inject_tdi;
+t = tdi * Di;
+pressure_psi = is_undef(inject_psi) ? 20000 : inject_psi;
 
 function get_meters_from_inches(inch) = 0.0254 * inch;
 Di_meters = get_meters_from_inches(Di);
 t_meters = get_meters_from_inches(t);
-echo("Di(in)", Di, "t(in)", t, "Di(m)", Di_meters, "t(m)", t_meters, "Di(mm)", Di_meters*1000, "t(mm)", t_meters*1000);
+echo("Di(in)", Di, "t(in)", t, "Di(m)", Di_meters, "t(m)", t_meters, "Di(mm)", Di_meters*1000, "t(mm)", t_meters*1000, "t/Di", tdi);
 tolerance = 0.001;
-echo("Tolerance(mm)", tolerance*1000);
+echo("Edge and support tolerance(mm)", tolerance*1000);
 
 // Mesh object in OS2CX
 os2cx_mesh("test_disc", material="acrylic") {
