@@ -15,7 +15,7 @@ resolution = 100;
 
 // Stachiw experiments are specified in inches and psi
 Di = 1.5;
-t = 0.559/Di;
+t = 0.559 * Di;
 pressure_psi = 20000;
 
 function get_meters_from_inches(inch) = 0.0254 * inch;
