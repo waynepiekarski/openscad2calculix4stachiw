@@ -1,0 +1,15 @@
+Acrylic plastic viewports for ocean engineering applications (1977)
+https://catalog.hathitrust.org/Record/008333526
+
+Main Author: 	Stachiw, J. D
+Language(s): 	English
+Published: 	San Diego, Calif. : Naval Undersea Center, 1977
+Subjects: 	Ocean engineering > Ocean engineering / Materials
+Oceanographic submersibles > Oceanographic submersibles / Materials
+Physical Description: 	2 v. : ill. ; 28 cm
+
+Book viewer:
+https://babel.hathitrust.org/cgi/pt?id=uc1.31822009085754&view=1up&seq=337
+
+Individual pages:
+wget "https://babel.hathitrust.org/cgi/imgsrv/image?id=uc1.31822009085754;seq=342;size=200;rotation=90"
