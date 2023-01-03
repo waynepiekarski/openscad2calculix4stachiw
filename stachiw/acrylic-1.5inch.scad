@@ -1,0 +1,63 @@
+// All units are in meters
+
+include <../openscad2calculix.scad>
+
+// Material properties for acrylic
+// Poisson's ratio: https://www.matweb.com/search/DataSheet.aspx?MatGUID=632572aeef2a4224b5ac8fbd4f1b6f77
+// Young's modulus: https://www.engineeringtoolbox.com/young-modulus-d_417.html
+os2cx_material_elastic_simple(
+    "acrylic",
+    youngs_modulus=[2.25, "GPa"], /* 1.20 - 3.38 matweb, 1.4 - 3.1 engtoolbox */
+    poissons_ratio=0.4, /* 0.37-0.43 */
+    density=[1185, "kg/m^3"]); /* 1.185 g/cc */
+
+resolution = 100;
+// Stachiw experiments are specified in inches
+Di = 1.5;
+t = 0.559/Di;
+function get_meters_from_inches(inch) = 0.0254 * inch;
+Di_meters = get_meters_from_inches(Di);
+t_meters = get_meters_from_inches(t);
+echo("Di(in)", Di, "t(in)", t, "Di(m)", Di_meters, "t(m)", t_meters, "Di(mm)", Di_meters*1000, "t(mm)", t_meters*1000);
+tolerance = 0.001; // 0.001m = 1mm
+
+// Mesh object in OS2CX
+os2cx_mesh("test_disc", material="acrylic") {
+    cylinder(d=Di_meters, h=t_meters, $fn=resolution, center=true);
+}
+
+os2cx_select_volume("supported_edge") {
+    difference() {
+        cylinder(d=Di_meters+tolerance, h=t_meters-tolerance, $fn=resolution, center=true);
+        cylinder(d=Di_meters-tolerance, h=t_meters+tolerance, $fn=resolution, center=true);
+    }
+}
+
+os2cx_select_surface("load_surface", [0, 0, +1], 45) /* tolerance angle = 45 degrees */ {
+    translate([0,0,t_meters/2])
+        cylinder(d=Di_meters-tolerance, h=2*tolerance, $fn=resolution, center=true);
+}
+
+
+// Apply pressure across entire load surface in psi
+// Convert from psi into Pa since os2cx doesn't support psi or lb/in^2 directly
+pressure_psi = 6000;
+function get_pascal_from_psi(psi) = 6894.76 * psi;
+pressure_Pa = get_pascal_from_psi(pressure_psi);
+echo("pressure(psi)", pressure_psi, "pressure(Pa)", pressure_Pa, "pressure(MPa)", pressure_Pa/1000000.0);
+os2cx_load_surface(
+    "applied_weight",
+    "load_surface",
+    force_per_area=[[0, 0, -1 * pressure_Pa], "Pa"]);
+
+os2cx_analysis_static_simple(
+    fixed="supported_edge",
+    load="applied_weight",
+    length_unit="m"
+);
+
+// Report the maximum deflection of the loaded part
+os2cx_measure(
+    "max_deflection_result",
+    "load_surface",
+    "DISP");
