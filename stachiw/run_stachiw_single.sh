@@ -25,9 +25,13 @@ $(dirname $0)/../core/os2cx "${TEMP}" > "${TEMP}.stdout"
 # Verify that the units are always millimeters because it might be different and we should fail then
 DEFLECT_MM="$(grep "Measurement name=max_deflection_result" "${TEMP}.stdout" | grep " unit=mm" | tr '=' ' ' | awk '{ print $5 }')"
 if [[ "${DEFLECT_MM}" == "" ]]; then
-    echo "Error! No deflection in millimeters returned for t/Di=${INJECT_TDI}, Di=${INJECT_DIAMETER}, psi=${INJECT_PSI}"
-    grep "Measurement name=max_deflection_result" "${TEMP}.stdout"
-    exit 1
+    DEFLECT_UM="$(grep "Measurement name=max_deflection_result" "${TEMP}.stdout" | grep " unit=um" | tr '=' ' ' | awk '{ print $5 }')"
+    if [[ "${DEFLECT_UM}" == "" ]]; then
+	echo "Error! No deflection in millimeters/micrometers returned for t/Di=${INJECT_TDI}, Di=${INJECT_DIAMETER}, psi=${INJECT_PSI}"
+	grep "Measurement name=max_deflection_result" "${TEMP}.stdout"
+	exit 1
+    fi
+    DEFLECT_MM="$(echo "scale=3; ${DEFLECT_UM}/1000.0" | bc -l)"
 fi
 DEFLECT_IN="$(echo "scale=3; ${DEFLECT_MM}/25.4" | bc -l)"
 echo "Done: t/Di=${INJECT_TDI}, Di=${INJECT_DIAMETER}, psi=${INJECT_PSI}, thick_in=${THICKNESS_IN}, thick_mm=${THICKNESS_MM} --> deflect_mm=${DEFLECT_MM}, deflect_in=${DEFLECT_IN}"
