@@ -19,17 +19,23 @@ function get_meters_from_inches(inch) = 0.0254 * inch;
 Di_meters = get_meters_from_inches(Di);
 t_meters = get_meters_from_inches(t);
 echo("Di(in)", Di, "t(in)", t, "Di(m)", Di_meters, "t(m)", t_meters, "Di(mm)", Di_meters*1000, "t(mm)", t_meters*1000);
-tolerance = 0.001; // 0.001m = 1mm
+tolerance = 0.001;
+echo("Tolerance(mm)", tolerance*1000);
 
 // Mesh object in OS2CX
 os2cx_mesh("test_disc", material="acrylic") {
     cylinder(d=Di_meters, h=t_meters, $fn=resolution, center=true);
 }
 
+// Support the acrylic disc, which is important in getting the right results.
+// With supports on the entire cylinder sides, the deflection is micrometers.
+// With a thin ring around the bottom edge, the deflection is a more reasonable 1.2mm
+// At 6000 psi we are expecting about 0.025"=0.635mm from figure 7.12 but the graph is hard to read
 os2cx_select_volume("supported_edge") {
+    translate([0,0,-t_meters/2])
     difference() {
-        cylinder(d=Di_meters+tolerance, h=t_meters-tolerance, $fn=resolution, center=true);
-        cylinder(d=Di_meters-tolerance, h=t_meters+tolerance, $fn=resolution, center=true);
+        cylinder(d=Di_meters+tolerance, h=1*tolerance, $fn=resolution, center=true);
+        cylinder(d=Di_meters-tolerance, h=2*tolerance, $fn=resolution, center=true);
     }
 }
 
