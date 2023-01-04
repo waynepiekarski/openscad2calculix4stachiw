@@ -3,4 +3,4 @@
 set -xv
 sudo apt-get install qtbase5-dev qt5-qmake qtbase5-dev-tools
 sudo apt-get install openscad calculix-ccx libcgal-dev libtet1.5-dev libgtest-dev
-sudo apt-get install parallel
+sudo apt-get install parallel python3-pandas
