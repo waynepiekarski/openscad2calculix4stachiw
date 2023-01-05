@@ -35,4 +35,4 @@ if [[ "${DEFLECT_MM}" == "" ]]; then
 fi
 DEFLECT_IN="$(echo "scale=3; ${DEFLECT_MM}/25.4" | bc -l)"
 echo "Done: t/Di=${INJECT_TDI}, Di=${INJECT_DIAMETER}, psi=${INJECT_PSI}, thick_in=${THICKNESS_IN}, thick_mm=${THICKNESS_MM} --> deflect_mm=${DEFLECT_MM}, deflect_in=${DEFLECT_IN}"
-echo "${INJECT_TDI},${INJECT_DIAMETER},${INJECT_PSI},${THICKNESS_IN},${THICKNESS_MM},${DEFLECT_MM},${DEFLECT_IN}" >> stachiw-results.csv
+echo "${INJECT_TDI},${INJECT_DIAMETER},${INJECT_PSI},${THICKNESS_IN},${THICKNESS_MM},${DEFLECT_MM},${DEFLECT_IN}" >> stachiw-calculix.csv

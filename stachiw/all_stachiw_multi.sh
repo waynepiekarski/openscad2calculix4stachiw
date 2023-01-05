@@ -1,13 +1,14 @@
 #!/bin/bash
 
-echo "t/di,diam_in,psi,thick_in,thick_mm,deflect_mm,deflect_in" > stachiw-results.csv
+OUTPUT="stachiw-calculix.csv"
+echo "t/di,diam_in,psi,thick_in,thick_mm,deflect_mm,deflect_in" > "${OUTPUT}"
 
 do_test() {
     TDI="$1"
     DIAMETER="$2"
     PSI="$3"
     if [[ "${PSI}" == "0" ]]; then
-	echo "${TDI},${DIAMETER},${PSI},0,0,0,0" >> stachiw-results.csv
+	echo "${TDI},${DIAMETER},${PSI},0,0,0,0" >> "${OUTPUT}"
     else
 	echo "$(dirname $0)/run_stachiw_single.sh" "${TDI}" "${DIAMETER}" "${PSI}"
     fi
@@ -27,4 +28,4 @@ for DIAMETER in "1.5"; do
 done | time parallel --verbose
 
 # Sort everything in-place to get consistent output ordering
-sort --field-separator=',' --numeric -k1 -k2 -k3 --output=stachiw-results.csv stachiw-results.csv
+sort --field-separator=',' --numeric -k1 -k2 -k3 --output="${OUTPUT}" "${OUTPUT}"
