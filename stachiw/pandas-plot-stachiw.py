@@ -3,6 +3,7 @@
 import sys
 
 CALCULIX_RESULTS = "stachiw-calculix.csv"
+EQUATION_RESULTS = "stachiw-equation.csv"
 
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -17,6 +18,11 @@ calculix = pd.read_csv(CALCULIX_RESULTS, comment='#', header=0, engine='python',
 # Add more details to the t/Di labels and this also prevents Pandas using very long floating point numbers for the legend labels
 calculix['label'] = calculix['diam_in'].astype(str) + "in " + calculix['t/di'].astype(str) + " calcx"
 table = calculix
+
+# Read in the simple equation results
+equation = pd.read_csv(EQUATION_RESULTS, comment='#', header=0, engine='python', skiprows=0)
+equation['label'] = equation['diam_in'].astype(str) + "in " + equation['t/di'].astype(str) + " simp"
+table = pd.concat([table, equation])
 
 # Import all the manually captured Stachiw Figure 7.12 results via WebPlotDigitizer https://apps.automeris.io/wpd/
 import glob

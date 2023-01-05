@@ -1,16 +1,22 @@
 #!/bin/bash
 
-OUTPUT="stachiw-calculix.csv"
-echo "t/di,diam_in,psi,thick_in,thick_mm,deflect_mm,deflect_in" > "${OUTPUT}"
+CALCULIX="stachiw-calculix.csv"
+EQUATION="stachiw-equation.csv"
+echo "t/di,diam_in,psi,thick_in,thick_mm,deflect_mm,deflect_in" > "${CALCULIX}"
+cp "${CALCULIX}" "${EQUATION}"
 
 do_test() {
     TDI="$1"
     DIAMETER="$2"
     PSI="$3"
     if [[ "${PSI}" == "0" ]]; then
-	echo "${TDI},${DIAMETER},${PSI},0,0,0,0" >> "${OUTPUT}"
+	echo "${TDI},${DIAMETER},${PSI},0,0,0,0" >> "${CALCULIX}"
+	echo "${TDI},${DIAMETER},${PSI},0,0,0,0" >> "${EQUATION}"
     else
-	echo "$(dirname $0)/run_stachiw_single.sh" "${TDI}" "${DIAMETER}" "${PSI}"
+        # Queue up CalculiX command for parallel run later
+        echo "$(dirname $0)/run_stachiw_single.sh" "${TDI}" "${DIAMETER}" "${PSI}"
+        # Perform equation immediately since it is very fast
+        "$(dirname $0)/run_equation_single.py" "${TDI}" "${DIAMETER}" "${PSI}" >> "${EQUATION}"
     fi
 }
 
@@ -28,4 +34,5 @@ for DIAMETER in "1.5"; do
 done | time parallel --verbose
 
 # Sort everything in-place to get consistent output ordering
-sort --field-separator=',' --numeric -k1 -k2 -k3 --output="${OUTPUT}" "${OUTPUT}"
+sort --field-separator=',' --numeric -k1 -k2 -k3 --output="${CALCULIX}" "${CALCULIX}"
+sort --field-separator=',' --numeric -k1 -k2 -k3 --output="${EQUATION}" "${EQUATION}"
