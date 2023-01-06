@@ -20,18 +20,23 @@ do_test() {
     fi
 }
 
-for DIAMETER in "1.5"; do
-    # Execute each t/Di test over the approximate range it has in Figure 7.12 before breaking
-    # The CalculiX and equation results are perfectly linear and not curved like Stachiw's experiment, so fine resolution is not needed
-    # Generate one value at the maximum range of the graph so all the lines have the same length
-    TDI="0.082"; for PSI in {0..2000..100} 28000;   do do_test "${TDI}" "${DIAMETER}" "${PSI}"; done
-    TDI="0.156"; for PSI in {0..2000..100} 28000;   do do_test "${TDI}" "${DIAMETER}" "${PSI}"; done
-    TDI="0.228"; for PSI in {0..4000..200} 28000;   do do_test "${TDI}" "${DIAMETER}" "${PSI}"; done
-    TDI="0.331"; for PSI in {0..8000..1000} 28000;  do do_test "${TDI}" "${DIAMETER}" "${PSI}"; done
-    TDI="0.407"; for PSI in {0..14000..1000} 28000; do do_test "${TDI}" "${DIAMETER}" "${PSI}"; done
-    TDI="0.489"; for PSI in {0..20000..2000} 28000; do do_test "${TDI}" "${DIAMETER}" "${PSI}"; done
-    TDI="0.559"; for PSI in {0..24000..2000} 28000; do do_test "${TDI}" "${DIAMETER}" "${PSI}"; done
-    TDI="0.655"; for PSI in {0..24000..2000} 28000; do do_test "${TDI}" "${DIAMETER}" "${PSI}"; done
+# Execute each t/Di test over the range of the Figure 7.12 pressure range
+# CalculiX and equation results are always perfectly linear and not curved like Stachiw's experiment,
+# so there is no need for detailed fine resolution. So use less steps to make the calculations faster
+# but still see the linear relationship.
+for PSI in "0" "1000" "2000" "4000" "8000" "16000" "28000"; do
+    DIAMETER="1.5"
+    for TDI in "0.082" "0.156" "0.228" "0.331" "0.407" "0.489" "0.559" "0.655"; do
+	do_test "${TDI}" "${DIAMETER}" "${PSI}"
+    done
+    DIAMETER="3.33"
+    for TDI in "0.036" "0.102" "0.182" "0.251" "0.338" "0.433" "0.600"; do
+	do_test "${TDI}" "${DIAMETER}" "${PSI}"
+    done
+    DIAMETER="4.0"
+    for TDI in "0.058" "0.110" "0.241" "0.498"; do
+	do_test "${TDI}" "${DIAMETER}" "${PSI}"
+    done
 # Execute everything in parallel, since only one line per process is written there should be no corruption due to race conditions
 done | time parallel --verbose
 
