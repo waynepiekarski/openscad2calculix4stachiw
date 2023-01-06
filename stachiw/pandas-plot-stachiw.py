@@ -16,12 +16,12 @@ import numpy as np
 calculix = pd.read_csv(CALCULIX_RESULTS, comment='#', header=0, engine='python', skiprows=0)
 
 # Add more details to the t/Di labels and this also prevents Pandas using very long floating point numbers for the legend labels
-calculix['label'] = calculix['diam_in'].astype(str) + "in " + calculix['t/di'].astype(str) + " calcx"
+calculix['label'] = calculix['diam_in'].astype(str) + "in " + calculix['t/di'].round(3).apply(str) + " calcx"
 table = calculix
 
 # Read in the simple equation results
 equation = pd.read_csv(EQUATION_RESULTS, comment='#', header=0, engine='python', skiprows=0)
-equation['label'] = equation['diam_in'].astype(str) + "in " + equation['t/di'].astype(str) + " simp"
+equation['label'] = equation['diam_in'].astype(str) + "in " + equation['t/di'].round(3).apply(str) + " simp"
 table = pd.concat([table, equation])
 
 # Import all the manually captured Stachiw Figure 7.12 results via WebPlotDigitizer https://apps.automeris.io/wpd/
@@ -83,8 +83,13 @@ for key, grp in table.groupby(['label']):
         if count >= len(colors):
             count = 0
         last = key.split()[1]
+    style = '.-' # https://matplotlib.org/2.1.2/api/_as_gen/matplotlib.pyplot.plot.html#matplotlib-pyplot-plot
+    if key.split()[2] == 'calcx':
+        style = '.--'
+    elif key.split()[2] == 'simp':
+        style = '.:'
     print ("Plotting key={} with color count={}".format(key, count))
-    ax = grp.plot(ax=ax, kind='line', x='deflect_in', y='psi', label=key, style='.-', color=colors[count])
+    ax = grp.plot(ax=ax, kind='line', x='deflect_in', y='psi', label=key, style=style, color=colors[count])
 
 # Set graph axes to a subset of Figure 7.12 for more detail
 plt.xlim([0,0.45])
