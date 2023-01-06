@@ -37,6 +37,11 @@ for PSI in "0" "1000" "2000" "4000" "8000" "16000" "28000"; do
     for TDI in "0.058" "0.110" "0.241" "0.498"; do
 	do_test "${TDI}" "${DIAMETER}" "${PSI}"
     done
+    # 1.5cm window ==> 0.590in, 1/2" thick acrylic, t/Di=0.847
+    DIAMETER="0.590"
+    for TDI in "0.847"; do
+	do_test "${TDI}" "${DIAMETER}" "${PSI}"
+    done
 # Execute everything in parallel, since only one line per process is written there should be no corruption due to race conditions
 done | time parallel --verbose
 

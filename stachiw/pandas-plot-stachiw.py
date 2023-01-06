@@ -92,17 +92,26 @@ for diameter in table['diam_in'].unique():
         elif key.split()[2] == 'simp':
             style = '.:'
         print ("Plotting key={} with color={}/{}".format(key, count, colors[count]))
-        ax = grp.plot(ax=ax, kind='line', x='deflect_in', y='psi', label=key, style=style, color=colors[count])
+        if diameter == 0.59:
+            x = 'deflect_mm'
+        else:
+            x = 'deflect_in'
+        ax = grp.plot(ax=ax, kind='line', x=x, y='psi', label=key, style=style, color=colors[count])
 
     # Set graph axes to a subset of Figure 7.12 for more detail, this must be done here per subplot()
+    plt.ylim([0,28500])
+    plt.yticks(np.arange(0, 29000, 4000))
     if diameter == 3.33:
         plt.xlim([0,0.65])
         plt.xticks(np.arange(0, 0.65, 0.1))
+    elif diameter == 0.59: # Specific case of 1.5cm window at max pressure 15500 psi
+        plt.xlim([0,1.45])
+        plt.xticks(np.arange(0, 1.45, 0.25))
+        plt.ylim([0,15500])
+        plt.yticks(np.arange(0, 15500, 1000))
     else:
         plt.xlim([0,0.45])
         plt.xticks(np.arange(0, 0.45, 0.1))
-    plt.ylim([0,28500])
-    plt.yticks(np.arange(0, 29000, 4000))
 
     # Save figure to a PDF as well as display it later
     fig.set_size_inches(11, 8.5)
