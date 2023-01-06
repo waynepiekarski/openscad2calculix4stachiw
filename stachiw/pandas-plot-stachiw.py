@@ -109,5 +109,25 @@ for diameter in table['diam_in'].unique():
     fig.savefig("plot-{}in.pdf".format(diameter), dpi=1200)
     fig.savefig("plot-{}in.png".format(diameter), dpi=150)
 
+# Combine all the Stachiw Figure 7.12 figures together for comparison of T/Di results that are similar
+print("** Plotting combined Stachiw Figure 7.12 for comparison")
+ftable = table[table['label'].str.contains(" fig7.12")].copy()
+ftable.sort_values(by=['t/di','label'], inplace=True)
+fig, ax = plt.subplots()
+fig.canvas.set_window_title("Stachiw Figure 7.12 Combined")
+for key, grp in ftable.groupby(['label'], sort=False):
+    print ("Plotting key={}".format(key))
+    ax = grp.plot(ax=ax, kind='line', x='deflect_in', y='psi', label=key)
+    plt.xlim([0,0.45])
+    plt.xticks(np.arange(0, 0.45, 0.1))
+    plt.ylim([0,28500])
+    plt.yticks(np.arange(0, 29000, 4000))
+    last = grp.iloc[-1]
+    label = key.split()[0] + " " + key.split()[1]
+    ax.text(last['deflect_in']+0.005,last['psi']-250,label,fontsize=7,weight='bold')
+fig.set_size_inches(11, 8.5)
+fig.savefig("plot-figure7.12.pdf".format(diameter), dpi=1200)
+fig.savefig("plot-figure7.12.png".format(diameter), dpi=150)
+
 # Only show() once so all the windows are visible simultaneously
 plt.show()
