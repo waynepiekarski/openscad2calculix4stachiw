@@ -1,3 +1,58 @@
+# Replicate the experiments of J. D. Stachiw
+
+This repo is a fork of https://github.com/timmaxw/os2cx and is designed to
+replicate the experiments done by J. D. Stachiw in Figure 7.12 from the following book:
+
+```
+Stachiw, J. D., Acrylic plastic viewports for ocean engineering applications (1977)
+https://catalog.hathitrust.org/Record/008333526
+Main Author:    Stachiw, J. D
+Language(s):    English
+Published:      San Diego, Calif. : Naval Undersea Center, 1977
+Subjects:       Ocean engineering > Ocean engineering / Materials
+Oceanographic submersibles > Oceanographic submersibles / Materials
+Physical Description:   2 v. : ill. ; 28 cm
+```
+
+Link to Figure 7.12:
+https://babel.hathitrust.org/cgi/pt?id=uc1.31822009085754&view=1up&seq=337
+
+In this book, Stachiw measures the deflection of 3 different sizes and thicknesses
+of acrylic over a flange over a range of pressures until imploision. My goal was to
+replicate these results in Calculix and then compare against the real-world experiments
+to see if they match.
+
+![Figure 7.12 1.5"](./stachiw/stachiw-fig7.12-p337-1.5inch.png)
+![Figure 7.12 3.33"](./stachiw/stachiw-fig7.12-p338-3.33inch.png)
+![Figure 7.12 4.0"](./stachiw/stachiw-fig7.12-p339-4.0inch.png)
+
+# How to compile and run
+
+Code tested on Ubuntu 20.04:
+
+```bash
+./apt-get-deps
+qmake
+make
+cd stachiw
+# Perform calculations for different sizes, thickness, and pressure
+./all_stachiw_multi.sh
+# Generate graphs of experiments
+./pandas-plot-stachiw.py
+```
+
+These plots compare the Stachiw results against those calculated from CalculiX, as well as using standard equations for circular plate with uniform load and edges simply supported.
+Both the CalculiX results and the equations are perfectly linear, while Stachiw's results are curves that stop when the acrylic burst open. So the results are close and useful for
+approximate calculations, but do not predict the burst pressure or change at the same rate with pressure.
+![plot-1.5in.png](./stachiw/plot-1.5in.png)
+![plot-3.33in.png](./stachiw/plot-3.33in.png)
+![plot-4.0in.png](./stachiw/plot-4.0in.png)
+![plot-figure7.12.png](./stachiw/plot-figure7.12.png)
+
+
+# Original README.md
+Forked from original GitHub repository https://github.com/timmaxw/os2cx
+
 OS2CX (short for "OpenSCAD-to-CalculiX") integrates the popular open-source CAD
 package [OpenSCAD](http://www.openscad.org/) with the open-source analysis
 package [CalculiX](http://www.calculix.de/). OpenSCAD lets the user generate 3D
