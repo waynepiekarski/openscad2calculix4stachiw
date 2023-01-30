@@ -39,7 +39,11 @@ cd stachiw
 ./all_stachiw_multi.sh
 # Generate graphs of experiments
 ./pandas-plot-stachiw.py
+# Run GUI with single example
+./gui_stachiw_single.sh
 ```
+
+![gui_stachiw_single_screenshot.png](./stachiw/gui_stachiw_single_screenshot.png)
 
 These plots compare the Stachiw results against those calculated from CalculiX, as well as using standard equations for circular plate with uniform load and edges simply supported.
 Both the CalculiX results and the equations are perfectly linear, while Stachiw's results are curves that stop when the acrylic burst open. So the results are close and useful for
